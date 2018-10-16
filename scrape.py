@@ -1,4 +1,4 @@
-import bs4
+from bs4 import BeautifulSoup
 import requests
 import datetime
 from _overlapped import NULL
@@ -24,11 +24,21 @@ def callmail(msg1,email):
 
 db = pymysql.connect(host='localhost',port=3306,user='root',passwd='root',db='innovacer')
 cursor=db.cursor()
-cursor.execute("SELECT VERSION()")
-data=cursor.fetchone()
-cursor.execute("DROP TABLE IF EXISTS USERDATA")
-sql = """CREATE TABLE USERDATA (EMAIL  CHAR(50) NOT NULL,SERIES  CHAR(255) NOT NULL)"""
-cursor.execute(sql)
+cursor.execute("USE innovacer") # select the database
+cursor.execute("SHOW TABLES")    # execute 'SHOW TABLES' (but data is not returned)
+flag1=0
+flag2=0
+for (table_name,) in cursor:
+    if (table_name=="userdata"):
+        flag1=1
+    if (table_name=="seriesdata"):
+        flag2=1     
+if(flag1 is 0):
+    sql = """CREATE TABLE USERDATA (EMAIL  CHAR(50) NOT NULL,SERIES  CHAR(255) NOT NULL)"""
+    cursor.execute(sql)
+if(flag2 is 0):
+    sql = """CREATE TABLE SERIESDATA (SERIES  CHAR(255) NOT NULL,DATE  CHAR(255) NOT NULL,DATEPRINT CHAR(255) NOT NULL)"""
+    cursor.execute(sql)
 def insertuserdata(email,series):
     sql = "INSERT INTO USERDATA(EMAIL, \
        SERIES) \
@@ -42,7 +52,7 @@ def insertuserdata(email,series):
 def findnext(seasonurl):
     if(1):
         html2 = requests.get(seasonurl)
-        soup2 = bs4.BeautifulSoup(html2.text, 'html5lib')
+        soup2 = BeautifulSoup(html2.text, 'html5lib')
         airdate = soup2.find_all('div', class_="airdate")
             
         episode=-1
@@ -106,9 +116,9 @@ def findnext(seasonurl):
                     datestr="0"+date_final[0]
                 yearstr=date_final[l-4]+date_final[l-3]+date_final[l-2]+date_final[l-1]
                 date_now=str(datestr)+mon+str(yearstr)
-                z=datetime.datetime.strptime(date_now, "%d%m%Y").date() 
+                d=datetime.datetime.strptime(date_now, "%d%m%Y").date() 
                 CurrentDate = datetime.datetime.now()
-                if CurrentDate.date() < z:
+                if CurrentDate.date() < d:
                     released=0
                     break   
             else:
@@ -125,8 +135,10 @@ def findnext(seasonurl):
                 if(known is 1):
                     if(released is 0):
                         z="New season of "+verify+"  will be live on "+out_final
+                        insertseriesdata(verify1,date_now,out_final)
                     else:
-                        z=verify+" has stopped streaming"
+                        z=verify+" has stopped streaming and no other details are available"
+                        insertseriesdata(verify1, "stopped",out_final)
                 else:
                     z="New season of "+verify+" dates are not known"
         else:
@@ -136,22 +148,64 @@ def findnext(seasonurl):
                 if(known is 1):
                     if(released is 0):
                         z="Next episode of "+verify+" will be live on "+out_final
+                        insertseriesdata(verify1,date_now,out_final)
                     else:
-                        z=verify+" has stopped streaming"
+                        z=verify+" has stopped streaming and no further details are available"
+                        insertseriesdata(verify1, "stopped",out_final)
                 else:
                     z="Next episode dates of "+verify+" are not known"
     return z    
-
+def insertseriesdata(name,date,dateprint):
+    sql = "INSERT INTO SERIESDATA(SERIES, \
+       DATE,DATEPRINT) \
+       VALUES ('%s', '%s','%s')" % \
+       (name, date,dateprint)
+    try:
+        cursor.execute(sql)
+        db.commit()
+    except:
+        db.rollback()
+def findseriesdata(name):
+    sql = "SELECT * FROM SERIESDATA"
+    try:
+        cursor.execute(sql)
+        for row in cursor:
+            name=str(name)
+            namedata=str(row[0])
+            if(namedata==name): 
+                z=row[1]
+                if(z == "stopped"):
+                    return 1
+                else:
+                    d=datetime.datetime.strptime(z, "%d%m%Y").date() 
+                    CurrentDate = datetime.datetime.now()
+                    if CurrentDate.date() < d:
+                        return row[2]
+                    deleteold(series)
+                    return 0      
+    except Exception as e:
+        print("Exeception occured:{}".format(e))
+        db.rollback()
+def deleteold(series):
+    sql="DELETE FROM SERIESDATA WHERE SERIES='"+series+"'";
+    try:
+        cursor.execute(sql)
+    except Exception as e:
+        print("Exeception occured:{}".format(e))
+        db.rollback() 
+            
 print("Enter Email-ID:")
 email=input()
 atcheck = email.find('@')
 dotcheck= email.find('.',atcheck+1)
 length=len(email)
-while(atcheck <= 0 or dotcheck is -1 or length is (dotcheck+1)):
+while((atcheck <= 0) or (dotcheck is -1) or (length is (dotcheck+1))):
     print("Enter valid email id:")
     email=input()
     atcheck = email.find('@')
-    dotcheck= email.find('.',atcheck+1)print("Enter series:")       
+    dotcheck= email.find('.',atcheck+1)
+    length=len(email)
+print("Enter series:")       
 series=input()
 insertuserdata(email, series)
 count=[]
@@ -186,7 +240,7 @@ for q in range(0,len(count)):
     
     ################################################################
     html = requests.get(searchurl)
-    soup = bs4.BeautifulSoup(html.text, 'html5lib')
+    soup = BeautifulSoup(html.text, 'html5lib')
     
     
     s=[]
@@ -194,7 +248,7 @@ for q in range(0,len(count)):
     serieslink = soup.find_all(class_='result_text')
     sl=str(serieslink)
     if(sl =="[]"):
-        z="No "+inp+" such series exist"
+        z="No "+inp+" series exist"
         if(q == 0):
             mail=z
         else:
@@ -219,66 +273,87 @@ for q in range(0,len(count)):
             print("Type yes or no")
             temp=input()
             if(temp=="no"):
-                z="No "+inp+" such series exist"
+                z="No "+inp+" series exist"
                 if(q == 0):
                     mail=z
                     continue
                 else:
                     mail=mail+'\n'+z
                     continue
-        
-        s  = []
-        s2 = str(s1)
-        for i in s2:
-            s.append(i)
-        
-        outseries= []
-        for i in range(0, len(s)):
-            if(s[i] is 'f'):
-                j=i+3
-                while(s[j] != '"'):
-                    outseries.append(s[j])
-                    j=j+1
-                break    
-        
-        titleurl="".join(str(x) for x in outseries)
-        titleurl="https://www.imdb.com"+titleurl
-        
-        
-        
-        ##########################################
-        html1 = requests.get(titleurl)
-        soup1 = bs4.BeautifulSoup(html1.text, 'html5lib')
-        seasonlink = soup1.find_all('div', class_="seasons-and-year-nav")
-        sl=str(seasonlink)
-        if(sl =="[]"):
-            z="No "+inp+" such series exist"
-            print(z)
+        verify1=[]
+        for i in range(0, len(verify)):
+            if(verify[i+1] is '('):
+                break
+            else:
+                verify1.append(verify[i+1])
+        verify1.pop()        
+        verify1="".join(str(x) for x in verify1)
+        dt=findseriesdata(verify1)
+        if(dt is not 0 and dt!=None):
+            if(dt is 1):
+                z=verify+" has stopped streaming and no more information is available"
+            else:
+                z="Next episode of "+verify+" will be live on "+ dt
+            if(q == 0):
+                mail=z
+                continue
+            else:
+                mail=mail+'\n'+z
+                continue
+        else:            
+            s  = []
+            anchor=s1.a
+            s2 = str(anchor)
+            for i in s2:
+                s.append(i)
+            
+            outseries= []
+            for i in range(0, len(s)):
+                if(s[i] is 'f'):
+                    j=i+3
+                    while(s[j] != '"'):
+                        outseries.append(s[j])
+                        j=j+1
+                    break    
+            
+            titleurl="".join(str(x) for x in outseries)
+            titleurl="https://www.imdb.com"+titleurl
+            
+            
+            
+            ##########################################
+            html1 = requests.get(titleurl)
+            soup1 = BeautifulSoup(html1.text, 'html5lib')
+            seasonlink = soup1.find_all('div', class_="seasons-and-year-nav")
+            sl=str(seasonlink)
+            if(sl =="[]"):
+                z="No "+inp+" series exist"
+                print(z)
+                if(q == 0):
+                    mail=z
+                else:
+                    mail=mail+'\n'+z
+            else:    
+                lastseason=seasonlink[0]
+                lastseason=str(lastseason.a)
+                season  = []
+                for i in lastseason:
+                    season.append(i)
+                outseason= []
+                for i in range(0, len(season)):
+                    if(season[i] is '<' and season[i+1] is 'a' ):
+                        j=i+9
+                        while(season[j] != '"'):
+                            outseason.append(season[j])
+                            j=j+1
+                        break 
+                seasonurl="".join(str(x) for x in outseason)   
+                seasonurl="https://www.imdb.com"+seasonurl
+                z=findnext(seasonurl)
             if(q == 0):
                 mail=z
             else:
-                mail=mail+'\n'+z
-        else:    
-            lastseason=seasonlink[0]
-            lastseason=str(lastseason)
-            season  = []
-            for i in lastseason:
-                season.append(i)
-            
-            outseason= []
-            for i in range(0, len(season)):
-                if(season[i] is '<' and season[i+1] is 'a' ):
-                    j=i+9
-                    while(season[j] != '"'):
-                        outseason.append(season[j])
-                        j=j+1
-                    break 
-            seasonurl="".join(str(x) for x in outseason)   
-            seasonurl="https://www.imdb.com"+seasonurl
-            z=findnext(seasonurl)
-        if(q == 0):
-            mail=z
-        else:
-            mail=mail+'\n'+z   
-print("Thanks for visiting,plz check your mail")
+                mail=mail+'\n'+z   
+print("Thanks for visiting,please check your mail")
+print(mail)
 callmail(mail,email)             
