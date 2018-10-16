@@ -144,12 +144,14 @@ def findnext(seasonurl):
 
 print("Enter Email-ID:")
 email=input()
-result = email.find('@')
-while(result <= 0):
+atcheck = email.find('@')
+dotcheck= email.find('.',atcheck+1)
+length=len(email)
+while(atcheck <= 0 or dotcheck is -1 or length is (dotcheck+1)):
     print("Enter valid email id:")
     email=input()
-    result = email.find('@')
-print("Enter series:")       
+    atcheck = email.find('@')
+    dotcheck= email.find('.',atcheck+1)print("Enter series:")       
 series=input()
 insertuserdata(email, series)
 count=[]
