@@ -121,31 +121,31 @@ def findnext(seasonurl):
     #####if details of only first episode is avilable
     if(j is 0):
         if(year is 1):
-            z="New season of "+verify+"  will be live in "+out_final
+            z="TV Series: "+verify+'\n'+"New season will be live in "+out_final
         else:
             if(known is 1):
                 if(released is 0):
-                    z="New season of "+verify+"  will be live on "+out_final
+                    z="TV Series: "+verify+'\n'+"New season will be live on "+out_final
                     insertseriesdata(verify1,date_now,out_final)
                 else:
-                    z=verify+" has stopped streaming and no other details are available"
+                    z="TV Series: "+verify+'\n'+" Series has stopped streaming and no other details are available"
                     insertseriesdata(verify1, "stopped",out_final)
             else:
-                z="New season of "+verify+" dates are not known"
+                z="TV Series: "+verify+'\n'+"New season dates are not known"
     #considering other cases
     else:
         if(year is 1):
-            z="Next episode of "+verify+" will be live in "+out_final
+            z="TV Series: "+verify+'\n'+"Next episode will be live in "+out_final
         else:
             if(known is 1):
                 if(released is 0):
-                    z="Next episode of "+verify+" will be live on "+out_final
+                    z="TV Series: "+verify+'\n'+"Next episode of will be live on "+out_final
                     insertseriesdata(verify1,date_now,out_final)
                 else:
-                    z=verify+" has stopped streaming and no further details are available"
+                    z="TV Series: "+verify+'\n'+"Series has stopped streaming and no further details are available"
                     insertseriesdata(verify1, "stopped",out_final)
             else:
-                z="Next episode dates of "+verify+" are not known"
+                z="TV Series: "+verify+'\n'+"Next episode dates of are not known"
     return z    
 
       ######insert searched result after scprapping in database(dateprint is the date in another form)###
@@ -278,7 +278,7 @@ for q in range(0,len(count)):
         if(q == 0):
             mail=z
         else:
-            mail=mail+'\n'+z
+            mail=mail+'\n'+'\n'+z
     else:
         s1=serieslink[0]                                   #getting the first result
         
@@ -304,7 +304,7 @@ for q in range(0,len(count)):
                     mail=z
                     continue
                 else:
-                    mail=mail+'\n'+z
+                    mail=mail+'\n'+'\n'+z
                     continue
         verify1=[]                                                              #if yes continue
         for i in range(0, len(verify)):
@@ -317,14 +317,14 @@ for q in range(0,len(count)):
         dt=findseriesdata(verify1) #searching in my database first,which will give latest output as we compared with todays date
         if(dt is not 0 and dt!=None):                                   #if found here update mail and continue in loop
             if(dt is 1):
-                z=verify+" has stopped streaming and no more information is available"
+                z="TV Series: "+verify+'\n'+"Series has stopped streaming and no more information is available"
             else:
-                z="Next episode of "+verify+" will be live on "+ dt
+                z="TV Series: "+verify+'\n'+"Next episode will be live on "+ dt
             if(q == 0):
                 mail=z
                 continue
             else:
-                mail=mail+'\n'+z
+                mail=mail+'\n'+'\n'+z
                 continue
         else:            #else finding url of tv series page 
             s  = []
@@ -379,6 +379,6 @@ for q in range(0,len(count)):
             if(q == 0):
                 mail=z
             else:
-                mail=mail+'\n'+z   
+                mail=mail+'\n'+'\n'+z   
 print("Thanks for visiting,please check your mail")
-callmail(mail,email)                                                   #clalling the mail function to mail the final result
+callmail(mail,email)                                                   #calling the mail function to mail the final result
