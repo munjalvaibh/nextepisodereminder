@@ -13,9 +13,9 @@ depend on the following use cases:
 2. Only year is mentioned for next season.
 3. All the seasons are finished and no further details are available.
  
-This Python scripts is able perform the above mentioned tasks successfully above mentioned tasks in very robust and efficient manner.Further more it can handle more cases like invalid input,invalid email,no valid information about the next episode is available.
+This Python scripts is able perform the above mentioned tasks successfully in very robust and efficient manner.Further more it can handle more cases like invalid input,invalid email,no valid information about the next episode is available.
 
-Afterthat, I am storing the output data in database to decrease the execution time and computational power,whereas before using the data from database,I check the the information is updated by comparing it with Today's Date,thus making information valid.(I am only storing TV Series whose exact date of next episode are known and whose all season are finished, as all other cases are ambigious and need to  be updated time to time.)
+Afterthat, I am storing the output data in database to decrease the execution time and computational power,whereas before using the data from database,I check the the information is updated by comparing it with Today's Date,thus making information valid.(I am only storing TV Series whose exact date of next episode are known and those all season are finished, as all other cases are ambigious and need to  be updated time to time.)
 
 To run this program on your system,follow given simple steps:
 <br>
