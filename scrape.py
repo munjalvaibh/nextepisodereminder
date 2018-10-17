@@ -16,7 +16,7 @@ def callmail(msg1,email):
     targets = [email]
      
     msg = MIMEText(msg1)
-    msg['Subject'] = 'Reminder'
+    msg['Subject'] = 'Reminder for TV Series'
     msg['From'] = sender
     msg['To'] = ', '.join(targets)
      
