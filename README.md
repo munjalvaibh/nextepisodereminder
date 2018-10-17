@@ -15,7 +15,7 @@ depend on the following use cases:
  
 This Python scripts is able perform the above mentioned tasks successfully in very robust and efficient manner.Further more it can handle more cases like invalid input,invalid email,no valid information about the next episode is available.
 
-An additional feature is addeed, I am storing the output data in the database to decrease the execution time and computational power, whereas before using the data from the database,I check the information is up to date by comparing it with Today's Date, thus making information valid.(I am only storing TV Series those exact date of next episode are known and those all season are finished, as all other cases are ambiguous and need to be updated from time to time.)
+**An additional feature is addeed, I am storing the output data in the database to decrease the execution time and computational power, whereas before using the data from the database,I check the information is up to date by comparing it with Today's Date, thus making information valid.(I am only storing TV Series those exact date of next episode are known and those all season are finished, as all other cases are ambiguous and need to be updated from time to time.)**
 
 Script uses beautifulsoup libirary to pull out data from html files. 
 <br>
@@ -26,8 +26,9 @@ To run this program on your system,follow given simple steps:
 <br>
 1.Python 3 must be installed if not:
       For Ubuntu:<br>
-      sudo add-apt-repository ppa:jonathonf/python-3.6<br>
-      sudo apt-get install python3.6<br>
+ <font color="green">
+     sudo add-apt-repository ppa:jonathonf/python-3.6<br>
+      sudo apt-get install python3.6<br></font>
       For Windows:<br>
       Download it from:<br>
       https://www.python.org/downloads/ <br>
