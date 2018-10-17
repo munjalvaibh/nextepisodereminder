@@ -22,23 +22,23 @@ To run this program on your system,follow given simple steps:
 1.Python 3 must be installed if not:
       For Ubuntu:<br>
       sudo add-apt-repository ppa:jonathonf/python-3.6<br>
-      sudo apt-get install python3.6<\br>
-      For Windows:<\br>
-      Download it from:<\br>
-      https://www.python.org/downloads/ <\br>
- 2.Now install following libraries:
-      pip install bs4
-      pip install requests
-      pip install NULL
-      pip install smptlib
-      pip install pymysql
-3.Install MySQL in your device 
-      For Ubuntu:
-      Follow this steps:
-      https://support.rackspace.com/how-to/installing-mysql-server-on-ubuntu/
-      For Windows:
-      Download it from:
-      https://dev.mysql.com/doc/refman/8.0/en/windows-installation.html
- 4.After logging with your passsword in MySQL, Create a database of name Innovacer
-      CREATE DATABASE Innovacer;
- </p>
+      sudo apt-get install python3.6<br>
+      For Windows:<br>
+      Download it from:<br>
+      https://www.python.org/downloads/ <br>
+ 2.Now install following libraries:<br>
+      pip install bs4<br>
+      pip install requests<br>
+      pip install NULL<br>
+      pip install smptlib<br>
+      pip install pymysql<br>
+3.Install MySQL in your device<br> 
+      For Ubuntu:<br>
+      Follow this steps:<br>
+      https://support.rackspace.com/how-to/installing-mysql-server-on-ubuntu/  <br>
+      For Windows:<br>
+      Download it from:<br>
+      https://dev.mysql.com/doc/refman/8.0/en/windows-installation.html<br>
+ 4.After logging with your passsword in MySQL, Create a database of name Innovacer<br>
+      CREATE DATABASE Innovacer;<br>
+
