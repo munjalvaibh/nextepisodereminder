@@ -19,6 +19,9 @@ An additional feature is addeed, I am storing the output data in the database to
 
 Script uses beautifulsoup libirary to pull out data from html files. 
 <br>
+Attaching the few screenshots for better understanding
+<br>
+<br>
 To run this program on your system,follow given simple steps:
 <br>
 1.Python 3 must be installed if not:
