@@ -129,7 +129,7 @@ def findnext(seasonurl):
                     insertseriesdata(verify1,date_now,out_final)
                 else:
                     z="TV Series: "+verify+'\n'+" Series has stopped streaming and no other details are available"
-                    insertseriesdata(verify1, "stopped",out_final)
+                    insertseriesdata(verify1, "stopped","no")
             else:
                 z="TV Series: "+verify+'\n'+"New season dates are not known"
     #considering other cases
@@ -143,12 +143,12 @@ def findnext(seasonurl):
                     insertseriesdata(verify1,date_now,out_final)
                 else:
                     z="TV Series: "+verify+'\n'+"Series has stopped streaming and no further details are available"
-                    insertseriesdata(verify1, "stopped",out_final)
+                    insertseriesdata(verify1, "stopped","no")
             else:
                 z="TV Series: "+verify+'\n'+"Next episode dates of are not known"
     return z    
 
-      ######insert searched result after scprapping in database(dateprint is the date in another form)###
+######insert searched result after scprapping in database(dateprint is the date in another form)###
 def insertseriesdata(name,date,dateprint):
     sql = "INSERT INTO SERIESDATA(SERIES, \
        DATE,DATEPRINT) \
@@ -160,7 +160,7 @@ def insertseriesdata(name,date,dateprint):
     except:
         db.rollback()
 
-                   #####finding seriesdata in our database before scrpaping to save time#####       
+#####finding seriesdata in our database before scraping to save time#####       
 def findseriesdata(name):
     sql = "SELECT * FROM SERIESDATA"
     try:
@@ -184,7 +184,7 @@ def findseriesdata(name):
         print("Exeception occured:{}".format(e))
         db.rollback()
 
-                  ######deleting the obselete data from our database######        
+######deleting the obselete data from our database######        
 def deleteold(series):
     sql="DELETE FROM SERIESDATA WHERE SERIES='"+series+"'";
     try:
