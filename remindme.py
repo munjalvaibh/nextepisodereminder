@@ -10,9 +10,9 @@ from email.mime.text import MIMEText
 def callmail(msg1,email):
     smtp_ssl_host = 'smtp.gmail.com'  
     smtp_ssl_port = 465
-    username = 'reminderfromvaibhav'
-    password = 'hiinnovacer'
-    sender = "reminderfromvaibhav@gmail.com"
+    username = '' #insert your gmail user name
+    password = '' #insert your gmail password
+    sender = "" #gmail id
     targets = [email]
      
     msg = MIMEText(msg1)
